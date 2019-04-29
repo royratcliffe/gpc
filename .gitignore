@@ -1,0 +1,5 @@
+.vscode
+buildenv.sh
+*.o
+*.dll
+*~
