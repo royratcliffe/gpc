@@ -2,14 +2,14 @@
 #include "vertex.h"
 
 int vertex_list_term(gpc_vertex_list *list, term_t term)
-{ term_t head = PL_new_term_ref();
-  term_t tail = PL_new_term_ref();
+{ term_t tail = PL_new_term_ref();
   PL_put_nil(tail);
   for (int index = list->num_vertices; --index >= 0;)
-  { if (!vertex_term(list->vertex + index, head)) PL_fail;
+  { term_t head = PL_new_term_ref();
+    if (!vertex_term(list->vertex + index, head)) PL_fail;
     if (!PL_cons_list(tail, head, tail)) PL_fail;
   }
-  return PL_put_term(term, tail);
+  return PL_unify(term, tail);
 }
 
 /**
