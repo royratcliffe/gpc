@@ -8,7 +8,7 @@
 
 :- load_foreign_library(foreign(gpc)).
 
-/** <module> gpc
+/** <module> Generic Polygon Clipper
 
 ## What is a polygon?
 
@@ -32,6 +32,11 @@ ordinates: x and y. Contours can be external, or holes.
 %
 %   NumContours unifies with the number of polygon contours, including
 %   holes.
+
+%!  gpc_polygon_add_contour(+Polygon, +Contour) is det.
+%
+%   Adds a new Contour to Polygon. Each contour is a list of vertex(X,
+%   Y) objects describing either an external contour or a hole.
 
 %!  gpc_polygon_contour(+Polygon, -Contour) is nondet.
 %
