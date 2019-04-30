@@ -26,3 +26,15 @@ int term_vertex_list(term_t term, gpc_vertex_list *list)
   }
   PL_succeed;
 }
+
+/**
+ * Cleans up the contents of a GPC vertex list. The given list returns
+ * to its original empty condition. Does not de-allocate the list.
+ * Leaves that to the caller, since the list itself could exist in the
+ * heap or on the stack.
+ */
+void cleanup_vertex_list(gpc_vertex_list *list)
+{ PL_free(list->vertex);
+  list->vertex = NULL;
+  list->num_vertices = 0;
+}

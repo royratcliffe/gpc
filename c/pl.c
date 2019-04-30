@@ -63,11 +63,11 @@ foreign_t polygon_add_contour(term_t polygon, term_t contour)
   list.num_vertices = 0;
   list.vertex = PL_malloc(sizeof(list.vertex[0]) << 4);
   if (!term_vertex_list(vertices, &list))
-  { PL_free(list.vertex);
+  { cleanup_vertex_list(&list);
     PL_fail;
   }
   gpc_add_contour(blob, &list, hole);
-  PL_free(list.vertex);
+  cleanup_vertex_list(&list);
   PL_succeed;
 }
 
