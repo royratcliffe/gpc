@@ -49,15 +49,24 @@ foreign_t polygon_num_contours(term_t polygon, term_t num_contours)
 
 foreign_t polygon_add_contour(term_t polygon, term_t contour)
 { gpc_polygon *blob;
+  functor_t functor;
+  term_t vertices;
+  int hole;
   if (!get_polygon(polygon, &blob)) PL_fail;
+  if (!PL_get_functor(contour, &functor)) PL_fail;
+  if (functor == external_1_functor) hole = FALSE;
+  else if (functor == hole_1_functor) hole = TRUE;
+  else return PL_type_error("contour", contour);
+  vertices = PL_new_term_ref();
+  if (!PL_get_arg(1, contour, vertices)) PL_fail;
   gpc_vertex_list list;
   list.num_vertices = 0;
   list.vertex = PL_malloc(sizeof(list.vertex[0]) << 4);
-  if (!term_vertex_list(contour, &list))
+  if (!term_vertex_list(vertices, &list))
   { PL_free(list.vertex);
     PL_fail;
   }
-  gpc_add_contour(blob, &list, 0);
+  gpc_add_contour(blob, &list, hole);
   PL_free(list.vertex);
   PL_succeed;
 }
