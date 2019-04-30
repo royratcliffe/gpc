@@ -62,6 +62,22 @@ foreign_t polygon_add_contour(term_t polygon, term_t contour)
   PL_succeed;
 }
 
+foreign_t polygon_contour(term_t polygon, term_t contour, control_t control)
+{ int context = (int)PL_foreign_context(control);
+  gpc_polygon *blob;
+  if (!get_polygon(polygon, &blob)) PL_fail;
+  switch (PL_foreign_control(control))
+  { case PL_FIRST_CALL:
+      if (blob->num_contours == 0) PL_fail;
+    case PL_REDO:
+      if (!vertex_list_term(&blob->contour[context], contour)) PL_fail;
+      if (++context < blob->num_contours) PL_retry(context);
+    case PL_PRUNED:
+      PL_succeed;
+  }
+  PL_fail;
+}
+
 /*
  *     _           _        _ _
  *    (_)_ __  ___| |_ __ _| | |
@@ -81,6 +97,7 @@ install_t install_gpc()
   PL_register_foreign("gpc_empty_polygon", 1, empty_polygon, 0);
   PL_register_foreign("gpc_polygon_num_contours", 2, polygon_num_contours, 0);
   PL_register_foreign("gpc_polygon_add_contour", 2, polygon_add_contour, 0);
+  PL_register_foreign("gpc_polygon_contour", 2, polygon_contour, PL_FA_NONDETERMINISTIC);
 }
 
 install_t uninstall_gpc()

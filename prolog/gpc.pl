@@ -2,7 +2,8 @@
           [   gpc_version/1,
               gpc_empty_polygon/1,
               gpc_polygon_num_contours/2,
-              gpc_polygon_add_contour/2
+              gpc_polygon_add_contour/2,
+              gpc_polygon_contour/2
           ]).
 
 :- load_foreign_library(foreign(gpc)).
@@ -31,3 +32,8 @@ ordinates: x and y. Contours can be external, or holes.
 %
 %   NumContours unifies with the number of polygon contours, including
 %   holes.
+
+%!  gpc_polygon_contour(+Polygon, -Contour) is nondet.
+%
+%   Unifies one-by-one with contours in the polygon. Each contour is a
+%   compound whose functor indicates external or hole.
