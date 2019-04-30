@@ -10,8 +10,8 @@ atom_t int_atom;
 atom_t xor_atom;
 atom_t union_atom;
 
-atom_t contour_atom;
-atom_t hole_atom;
+functor_t external_1_functor;
+functor_t hole_1_functor;
 
 functor_t vertex_2_functor;
 
@@ -67,10 +67,14 @@ foreign_t polygon_contour(term_t polygon, term_t contour, control_t control)
   gpc_polygon *blob;
   if (!get_polygon(polygon, &blob)) PL_fail;
   switch (PL_foreign_control(control))
-  { case PL_FIRST_CALL:
+  {   term_t list;
+    case PL_FIRST_CALL:
       if (blob->num_contours == 0) PL_fail;
     case PL_REDO:
-      if (!vertex_list_term(&blob->contour[context], contour)) PL_fail;
+      list = PL_new_term_ref();
+      if (!vertex_list_term(&blob->contour[context], list)) PL_fail;
+      functor_t functor = blob->hole[context] ? hole_1_functor : external_1_functor;
+      if (!PL_unify_term(contour, PL_FUNCTOR, functor, PL_TERM, list)) PL_fail;
       if (++context < blob->num_contours) PL_retry(context);
     case PL_PRUNED:
       PL_succeed;
@@ -91,6 +95,8 @@ install_t install_gpc()
   int_atom = PL_new_atom("int");
   xor_atom = PL_new_atom("xor");
   union_atom = PL_new_atom("union");
+  external_1_functor = PL_new_functor_sz(PL_new_atom("external"), 1);
+  hole_1_functor = PL_new_functor_sz(PL_new_atom("hole"), 1);
   vertex_2_functor = PL_new_functor_sz(PL_new_atom("vertex"), 2);
 
   PL_register_foreign("gpc_version", 1, version, 0);
