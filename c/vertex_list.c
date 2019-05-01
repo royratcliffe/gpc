@@ -2,14 +2,14 @@
 #include "vertex.h"
 
 int vertex_list_term(gpc_vertex_list *list, term_t term)
-{ term_t head = PL_new_term_ref();
-  term_t tail = PL_new_term_ref();
+{ term_t tail = PL_new_term_ref();
   PL_put_nil(tail);
   for (int index = list->num_vertices; --index >= 0;)
-  { if (!vertex_term(list->vertex + index, head)) PL_fail;
+  { term_t head = PL_new_term_ref();
+    if (!vertex_term(list->vertex + index, head)) PL_fail;
     if (!PL_cons_list(tail, head, tail)) PL_fail;
   }
-  return PL_put_term(term, tail);
+  return PL_unify(term, tail);
 }
 
 /**
@@ -25,4 +25,16 @@ int term_vertex_list(term_t term, gpc_vertex_list *list)
     if (!term_vertex(head, list->vertex + list->num_vertices)) PL_fail;
   }
   PL_succeed;
+}
+
+/**
+ * Cleans up the contents of a GPC vertex list. The given list returns
+ * to its original empty condition. Does not de-allocate the list.
+ * Leaves that to the caller, since the list itself could exist in the
+ * heap or on the stack.
+ */
+void cleanup_vertex_list(gpc_vertex_list *list)
+{ PL_free(list->vertex);
+  list->vertex = NULL;
+  list->num_vertices = 0;
 }
