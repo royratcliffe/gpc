@@ -1,5 +1,7 @@
 #include "polygon_blob.h"
 
+#include <memory.h>
+
 /**
  * Gets the polygon blob from the given term. Succeeds if the given term
  * associates with a GPC polygon blob.
