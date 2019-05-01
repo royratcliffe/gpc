@@ -12,14 +12,15 @@ atom_t union_atom;
 
 functor_t external_1_functor;
 functor_t hole_1_functor;
-
 functor_t vertex_2_functor;
 
 int term_op(term_t term, gpc_op *op)
-{ if (term == diff_atom) *op = GPC_DIFF;
-  else if (term == int_atom) *op = GPC_INT;
-  else if (term == xor_atom) *op = GPC_XOR;
-  else if (term == union_atom) *op = GPC_UNION;
+{ atom_t atom;
+  if (!PL_get_atom(term, &atom)) return PL_type_error("atom", term);
+  if (atom == diff_atom) *op = GPC_DIFF;
+  else if (atom == int_atom) *op = GPC_INT;
+  else if (atom == xor_atom) *op = GPC_XOR;
+  else if (atom == union_atom) *op = GPC_UNION;
   else PL_fail;
   PL_succeed;
 }
@@ -56,7 +57,7 @@ foreign_t polygon_add_contour(term_t polygon, term_t contour)
   if (!PL_get_functor(contour, &functor)) PL_fail;
   if (functor == external_1_functor) hole = FALSE;
   else if (functor == hole_1_functor) hole = TRUE;
-  else return PL_type_error("contour", contour);
+  else return PL_type_error("external or hole functor", contour);
   vertices = PL_new_term_ref();
   if (!PL_get_arg(1, contour, vertices)) PL_fail;
   gpc_vertex_list list;
@@ -91,6 +92,18 @@ foreign_t polygon_contour(term_t polygon, term_t contour, control_t control)
   PL_fail;
 }
 
+foreign_t polygon_clip(atom_t Op, term_t Subject, term_t Clip, term_t Result)
+{ gpc_op op;
+  gpc_polygon *subject, *clip, *result;
+  if (!term_op(Op, &op)) PL_fail;
+  if (!get_polygon(Subject, &subject)) PL_fail;
+  if (!get_polygon(Clip, &clip)) PL_fail;
+  unify_polygon(Result);
+  assert(get_polygon(Result, &result));
+  gpc_polygon_clip(op, subject, clip, result);
+  PL_succeed;
+}
+
 /*
  *     _           _        _ _
  *    (_)_ __  ___| |_ __ _| | |
@@ -113,6 +126,7 @@ install_t install_gpc()
   PL_register_foreign("gpc_polygon_num_contours", 2, polygon_num_contours, 0);
   PL_register_foreign("gpc_polygon_add_contour", 2, polygon_add_contour, 0);
   PL_register_foreign("gpc_polygon_contour", 2, polygon_contour, PL_FA_NONDETERMINISTIC);
+  PL_register_foreign("gpc_polygon_clip", 4, polygon_clip, 0);
 }
 
 install_t uninstall_gpc()

@@ -3,7 +3,8 @@
               gpc_empty_polygon/1,
               gpc_polygon_num_contours/2,
               gpc_polygon_add_contour/2,
-              gpc_polygon_contour/2
+              gpc_polygon_contour/2,
+              gpc_polygon_clip/4
           ]).
 
 :- load_foreign_library(foreign(gpc)).
@@ -37,8 +38,17 @@ ordinates: x and y. Contours can be external, or holes.
 %
 %   Adds a new Contour to Polygon. Each contour is a list of vertex(X,
 %   Y) objects describing either an external contour or a hole.
+%
+%   External contours *must* wind clockwise.
 
 %!  gpc_polygon_contour(+Polygon, -Contour) is nondet.
 %
 %   Unifies one-by-one with contours in the polygon. Each contour is a
 %   compound whose functor indicates external or hole.
+%
+%   Fails if the polygon has no contours.
+
+%!  gpc_polygon_clip(+Op, +Subject, +Clip, -Result) is det.
+%
+%   Clips the Subject contours against the Clip contours, unifying the
+%   resulting contours at Result polygon.

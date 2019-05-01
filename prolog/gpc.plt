@@ -33,4 +33,60 @@ test(add_contour,
     gpc_polygon_add_contour(Polygon, hole([vertex(2, 2), vertex(3, 3)])),
     gpc_polygon_contour(Polygon, Contours).
 
+test(contour, fail) :-
+    gpc_empty_polygon(Polygon),
+    gpc_polygon_contour(Polygon, _).
+
+%   The union of two empty polygons clips to another empty polygon.
+
+test(clip) :-
+    gpc_empty_polygon(Subject),
+    gpc_empty_polygon(Clip),
+    gpc_polygon_clip(union, Subject, Clip, Result),
+    gpc_polygon_num_contours(Result, 0).
+
+test(clip_int,
+     Contour == external([   vertex(1.0, 0.5),
+                             vertex(0.5, 0.5),
+                             vertex(0.5, 1.0),
+                             vertex(1.0, 1.0)
+                         ])) :-
+    gpc_empty_polygon(Subject),
+    gpc_empty_polygon(Clip),
+    gpc_polygon_add_contour(Subject,
+                            external([   vertex(0.5, 0.5),
+                                         vertex(0.5, 1.5),
+                                         vertex(1.5, 1.5),
+                                         vertex(1.5, 0.5)
+                                     ])),
+    gpc_polygon_add_contour(Clip,
+                            external([   vertex(0, 0),
+                                         vertex(0, 1),
+                                         vertex(1, 1),
+                                         vertex(1, 0)
+                                     ])),
+    gpc_polygon_clip(int, Subject, Clip, Result),
+    gpc_polygon_contour(Result, Contour).
+
+%   Union with empty just re-orders the vertices. The contour remains
+%   unchanged.
+
+test(clip_union,
+     Contour == external([   vertex(1.0, 0.0),
+                             vertex(0.0, 0.0),
+                             vertex(0.0, 1.0),
+                             vertex(1.0, 1.0)
+                         ])) :-
+    gpc_empty_polygon(Subject),
+    gpc_polygon_add_contour(Subject,
+                            external([   vertex(0, 0),
+                                         vertex(0, 1),
+                                         vertex(1, 1),
+                                         vertex(1, 0)
+                                     ])),
+    gpc_empty_polygon(Clip),
+    gpc_polygon_clip(union, Subject, Clip, Result),
+    gpc_polygon_num_contours(Result, 1),
+    gpc_polygon_contour(Result, Contour).
+
 :- end_tests(gpc).
