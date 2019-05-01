@@ -55,4 +55,4 @@ folder, not the repo folder itself.
 
 ## Work-in-progress
 
-* Currently, at version 0.1.0, does not support triangle strips.
+* Currently does not support triangle strips.
