@@ -16,11 +16,12 @@ test(num_contours) :-
     gpc_empty_polygon(Polygon),
     gpc_polygon_num_contours(Polygon, 0).
 
-%   Adds an empty contour. The number of contours increases from zero to
+%   Add an empty contour. The number of contours increases from zero to
 %   one.
 
 test(add_contour) :-
     gpc_empty_polygon(Polygon),
+    gpc_polygon_num_contours(Polygon, 0),
     gpc_polygon_add_contour(Polygon, external([])),
     gpc_polygon_num_contours(Polygon, 1).
 
