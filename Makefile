@@ -1,7 +1,8 @@
 SOBJ = $(PACKSODIR)/gpc.$(SOEXT)
 OBJ = c/pl.o c/polygon_blob.o c/vertex_list.o c/vertex.o c/gpc.o
 
-CFLAGS += -O2 -fomit-frame-pointer
+# See notes in README.md for explanation of no-unused-result warning.
+CFLAGS += -O2 -fomit-frame-pointer -Wno-unused-result
 
 all: $(SOBJ)
 

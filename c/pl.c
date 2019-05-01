@@ -5,6 +5,9 @@
 #include "vertex.h"
 #include "gpc.h"
 
+#include <assert.h>
+#include <memory.h>
+
 atom_t diff_atom;
 atom_t int_atom;
 atom_t xor_atom;
