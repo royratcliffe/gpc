@@ -1,3 +1,3 @@
 name(gpc).
-version('0.1.0').
+version('1.0.0').
 title('Generic polygon clipper').
