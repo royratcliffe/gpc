@@ -4,7 +4,7 @@ Uses [Semantic Versioning](https://semver.org/).
 
 ## [1.0.1] - 2019-05-01
 ## Added
-- Add pack author, home and download link.
+- Add pack author, home and download links.
 
 ## [1.0.0] - 2019-05-01
 ### Added
