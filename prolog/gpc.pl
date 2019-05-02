@@ -3,6 +3,7 @@
               gpc_empty_polygon/1,
               gpc_polygon_num_contours/2,
               gpc_polygon_add_contour/2,
+              gpc_polygon/2,
               gpc_polygon_contour/2,
               gpc_polygon_clip/4
           ]).
@@ -69,6 +70,14 @@ Where the operation is one of: =diff=, =int=, =xor=, =union=.
 %   Y) compounds describing either an external contour or a hole.
 %
 %   External contours *must* wind clockwise.
+
+%!  gpc_polygon(+Contours:list(compound), +Polygon) is det.
+%
+%   Builds a Polygon from a given a list of Contours.
+
+gpc_polygon(Contours, Polygon) :-
+    gpc_empty_polygon(Polygon),
+    forall(member(Contour, Contours), gpc_polygon_add_contour(Polygon, Contour)).
 
 %!  gpc_polygon_contour(+Polygon, -Contour) is nondet.
 %
