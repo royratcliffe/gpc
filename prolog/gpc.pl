@@ -47,6 +47,8 @@ Intersect two polygons using
 
 Where the operation is one of: =diff=, =int=, =xor=, =union=.
 
+@author Roy Ratcliffe <royratcliffe@me.com>
+
 */
 
 %!  gpc_version(-Version) is det.
