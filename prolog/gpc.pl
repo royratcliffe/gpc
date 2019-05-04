@@ -5,6 +5,8 @@
               gpc_polygon_add_contour/2,
               gpc_polygon/2,
               gpc_polygon_contour/2,
+              gpc_polygon_vertex/3,
+              gpc_polygon_box/2,
               gpc_polygon_clip/4,
               gpc_read_polygon/3,
               gpc_polygon_codes/2
@@ -95,6 +97,32 @@ gpc_polygon(Contours, Polygon) :-
 %   compound whose functor indicates =external= or =hole=.
 %
 %   Fails if the polygon has no contours.
+
+%!  gpc_polygon_vertex(+Polygon, ?Hole, -Vertex) is nondet.
+%
+%   Unifies with every Polygon Vertex matching Hole. Hole is one of:
+%
+%       - =external= for exterior vertices,
+%       - =hole= for interior vertices, or
+%       - unbound for both exterior and interior.
+
+gpc_polygon_vertex(Polygon, Hole, Vertex) :-
+    gpc_polygon_contour(Polygon, Contour),
+    Contour =.. [Hole, Vertices],
+    member(Vertex, Vertices).
+
+%!  gpc_polygon_box(+Polygon, -Box:compound) is det.
+%
+%   Aggregates the bounding Box of Polygon where Box becomes =box(MinX,
+%   MinY, MaxX, MaxY)=.
+%
+%   Makes no assumptions about vertex orientation. The minima is not
+%   necessarily the left-most or bottom-most. That depends on
+%   the coordinate system.
+
+gpc_polygon_box(Polygon, Box) :-
+    aggregate_all(box(min(X), min(Y), max(X), max(Y)),
+                  gpc_polygon_vertex(Polygon, external, vertex(X, Y)), Box).
 
 %!  gpc_polygon_clip(+Op:atom, +Subject, +Clip, -Result) is det.
 %
