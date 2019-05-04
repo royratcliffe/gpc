@@ -6,12 +6,24 @@ a Prolog wrapper for his GPC tool.
 
 [gpc]:http://www.cs.man.ac.uk/~toby/alan/software/gpc.html
 
+## Too long; didn't read
+
+```prolog
+1 ?- [library(gpc/demos)].
+true.
+
+2 ?- britain_arrows(xor).
+true.
+```
+
+![snipping](prolog/gpc/britain-arrows-xor.PNG)
+
 ## Polygon types in Prolog
 
-Implements polygons as mutable BLOBs. Tempting to make a purely functional
-interface with no side effects. However, the underlying implementation maintains
-mutable polygon entities. Decision is to include pure functional interfaces
-using arity.
+Implements polygons as mutable BLOBs. Tempting to make a purely
+functional interface with no side effects. However, the underlying
+implementation maintains mutable polygon entities. Decision is to
+include pure functional predicates (side-effect free) using arity.
 
 Mutability makes some assumptions about threading. Polygons are *not* thread
 safe. Provide suitable atomic locking, e.g. using [mutexes][threadsync], if you
