@@ -96,18 +96,18 @@ gpc_polygon(Contours, Polygon) :-
 %
 %   Fails if the polygon has no contours.
 
+%!  gpc_polygon_clip(+Op:atom, +Subject, +Clip, -Result) is det.
+%
+%   Clips the Subject contours against the Clip contours, unifying the
+%   resulting contours at Result polygon.
+
 %!  gpc_read_polygon(Spec, Polygon, Options) is semidet.
 %
 %   Reads Polygon from a file Spec. Replaces the foreign implementation.
 
 gpc_read_polygon(Spec, Polygon, Options) :-
-    read_file_to_codes(Spec, Codes, Options),
-    gpc_polygon_codes(Polygon, Codes).
-
-%!  gpc_polygon_clip(+Op:atom, +Subject, +Clip, -Result) is det.
-%
-%   Clips the Subject contours against the Clip contours, unifying the
-%   resulting contours at Result polygon.
+  read_file_to_codes(Spec, Codes, Options),
+  gpc_polygon_codes(Polygon, Codes).
 
 %!  gpc_polygon_codes(+Polygon, -Codes) is det.
 %!  gpc_polygon_codes(-Polygon, +Codes) is semidet.
