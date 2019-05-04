@@ -1,5 +1,5 @@
 name(gpc).
-version('1.0.1').
+version('1.1.0').
 title('Generic polygon clipper').
 author('Roy Ratcliffe', 'royratcliffe@me.com').
 packager('Roy Ratcliffe', 'royratcliffe@me.com').
