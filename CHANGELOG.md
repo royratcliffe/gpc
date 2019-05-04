@@ -2,9 +2,12 @@
 
 Uses [Semantic Versioning](https://semver.org/).
 
-## [1.1.0] - 2019-05-02
+## [1.1.0] - 2019-05-04
 ## Added
-- `gpc_polygon/2` predicate. Minor version bump.
+- Vertex iteration by contour type.
+- Bounding box aggregation.
+- Reading polygons; serialisation to and from codes.
+- Demonstration using Britain clipped against arrows.
 - MIT license with advice from [Toby
   Howard](http://www.cs.man.ac.uk/~toby) at Manchester University.
 
