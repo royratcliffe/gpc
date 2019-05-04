@@ -76,7 +76,7 @@ Where the operation is one of: =diff=, =int=, =xor=, =union=.
 %   NumContours unifies with the number of polygon contours, including
 %   holes.
 
-%!  gpc_polygon_add_contour(+Polygon, +Contour) is det.
+%!  gpc_polygon_add_contour(+Polygon, +Contour:compound) is det.
 %
 %   Adds a new Contour to Polygon. Each contour is a list of vertex(X,
 %   Y) compounds describing either an external contour or a hole.
@@ -91,14 +91,14 @@ gpc_polygon(Contours, Polygon) :-
     gpc_empty_polygon(Polygon),
     forall(member(Contour, Contours), gpc_polygon_add_contour(Polygon, Contour)).
 
-%!  gpc_polygon_contour(+Polygon, -Contour) is nondet.
+%!  gpc_polygon_contour(+Polygon, -Contour:compound) is nondet.
 %
 %   Unifies one-by-one with contours in the polygon. Each contour is a
 %   compound whose functor indicates =external= or =hole=.
 %
 %   Fails if the polygon has no contours.
 
-%!  gpc_polygon_vertex(+Polygon, ?Hole, -Vertex) is nondet.
+%!  gpc_polygon_vertex(+Polygon, ?Hole, -Vertex:compound) is nondet.
 %
 %   Unifies with every Polygon Vertex matching Hole. Hole is one of:
 %
