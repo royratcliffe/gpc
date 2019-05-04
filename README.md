@@ -6,6 +6,18 @@ a Prolog wrapper for his GPC tool.
 
 [gpc]:http://www.cs.man.ac.uk/~toby/alan/software/gpc.html
 
+## Too long; didn't read
+
+```prolog
+1 ?- [library(gpc/demos)].
+true.
+
+2 ?- britain_arrows(xor).
+true.
+```
+
+![snipping](prolog/gpc/britain-arrows-xor.PNG)
+
 ## Polygon types in Prolog
 
 Implements polygons as mutable BLOBs. Tempting to make a purely
