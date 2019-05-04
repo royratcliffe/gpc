@@ -8,10 +8,10 @@ a Prolog wrapper for his GPC tool.
 
 ## Polygon types in Prolog
 
-Implements polygons as mutable BLOBs. Tempting to make a purely functional
-interface with no side effects. However, the underlying implementation maintains
-mutable polygon entities. Decision is to include pure functional interfaces
-using arity.
+Implements polygons as mutable BLOBs. Tempting to make a purely
+functional interface with no side effects. However, the underlying
+implementation maintains mutable polygon entities. Decision is to
+include pure functional predicates (side-effect free) using arity.
 
 Mutability makes some assumptions about threading. Polygons are *not* thread
 safe. Provide suitable atomic locking, e.g. using [mutexes][threadsync], if you

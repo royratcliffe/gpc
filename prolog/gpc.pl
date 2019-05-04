@@ -3,8 +3,10 @@
               gpc_empty_polygon/1,
               gpc_polygon_num_contours/2,
               gpc_polygon_add_contour/2,
+              gpc_polygon/2,
               gpc_polygon_contour/2,
-              gpc_polygon_clip/4
+              gpc_polygon_clip/4,
+              gpc_polygon_codes/2
           ]).
 
 :- use_foreign_library(foreign(gpc)).
@@ -46,6 +48,8 @@ Intersect two polygons using
 
 Where the operation is one of: =diff=, =int=, =xor=, =union=.
 
+@author Roy Ratcliffe <royratcliffe@me.com>
+
 */
 
 %!  gpc_version(-Version) is det.
@@ -70,6 +74,14 @@ Where the operation is one of: =diff=, =int=, =xor=, =union=.
 %
 %   External contours *must* wind clockwise.
 
+%!  gpc_polygon(+Contours:list(compound), +Polygon) is det.
+%
+%   Builds a Polygon from a given a list of Contours.
+
+gpc_polygon(Contours, Polygon) :-
+    gpc_empty_polygon(Polygon),
+    forall(member(Contour, Contours), gpc_polygon_add_contour(Polygon, Contour)).
+
 %!  gpc_polygon_contour(+Polygon, -Contour) is nondet.
 %
 %   Unifies one-by-one with contours in the polygon. Each contour is a
@@ -81,3 +93,85 @@ Where the operation is one of: =diff=, =int=, =xor=, =union=.
 %
 %   Clips the Subject contours against the Clip contours, unifying the
 %   resulting contours at Result polygon.
+
+:- use_module(library(dcg/basics)).
+
+%   The clipper conventionally serialises polygons as a series of
+%   whitespace-delimited integer and floating-point numbers. The first
+%   number is the number of contours, an integer. This encoding appears
+%   in GPF (generic polygon) files.
+%
+%   There is one slight complication: hole serialisation is optional.
+
+gpc_polygon_codes(Polygon, Codes) :-
+    var(Polygon),
+    !,
+    phrase(gpf(Contours), Codes),
+    gpc_polygon(Contours, Polygon).
+gpc_polygon_codes(Polygon, Codes) :-
+    findall(Contour, gpc_polygon_contour(Polygon, Contour), Contours),
+    phrase(gpf(Contours), Codes).
+
+gpf(Contours) -->
+    {   var(Contours)
+    },
+    !,
+    blanks,
+    integer(NumContours),
+    contours(Contours),
+    blanks,
+    {   length(Contours, NumContours)
+    }.
+gpf(Contours) -->
+    {   length(Contours, NumContours)
+    },
+    integer(NumContours),
+    "\n",
+    contours(Contours).
+
+contours([Contour|Contours]) -->
+    contour(Contour),
+    !,
+    contours(Contours).
+contours([]) -->
+    [].
+
+contour(Contour) -->
+    {   var(Contour)
+    },
+    !,
+    blanks,
+    integer(NumVertices),
+    vertices(Vertices),
+    {   length(Vertices, NumVertices),
+        Contour = external(Vertices)
+    }.
+contour(external(Vertices)) -->
+    {   length(Vertices, NumVertices)
+    },
+    integer(NumVertices),
+    "\n",
+    vertices(Vertices).
+
+vertices([Vertex|Vertices]) -->
+    vertex(Vertex),
+    !,
+    vertices(Vertices).
+vertices([]) -->
+    [].
+
+vertex(Vertex) -->
+    {   var(Vertex)
+    },
+    !,
+    blanks,
+    number(X),
+    blanks,
+    number(Y),
+    {   Vertex = vertex(X, Y)
+    }.
+vertex(vertex(X, Y)) -->
+    number(X),
+    " ",
+    number(Y),
+    "\n".
