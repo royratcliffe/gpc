@@ -57,6 +57,12 @@ Intersect two polygons using
 
 Where the operation is one of: =diff=, =int=, =xor=, =union=.
 
+## Tristrips
+
+You can also clip two polygons resulting in a triangle strip. Each strip comprises zero or more vertex lists, each representing a sub-strip of connected triangles. The interface lets you convert polygons to tristrips. You cannot directly create a tristrip.
+
+Tristrips model in Prolog as blobs.
+
 @author Roy Ratcliffe <royratcliffe@me.com>
 
 */
@@ -259,3 +265,14 @@ nl -->
     !.
 nl -->
     "\n".
+
+%   gpc_tristrip_num_strips
+%   Number of strips within Tristrip. This amounts to the same as
+%       findall(Strip, gpc_tristrip_vertices(Strip), Strips), length(Strips, NumStrips)
+%   Except that it does not enumerate and collate the actual contiguous sub-strips.
+
+%   gpc_tristrip_vertices
+%   Unifies with Vertices belonging to Tristrip, where vertices is a span of one or more vertex(X, Y) compounds representing a contiguous strip of triangles. The Tristrip blob comprises multiple discontiguous triangle strips.
+
+%   gpc_tristrip_area
+%   Area of Tristrip. Accumulates the total area by summing the half-cross products of each triangle.

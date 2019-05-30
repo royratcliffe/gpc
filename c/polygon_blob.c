@@ -38,8 +38,7 @@ int release_polygon(atom_t atom)
 }
 
 int write_polygon(IOSTREAM *stream, atom_t atom, int flags)
-{
-  gpc_polygon *blob = PL_blob_data(atom, NULL, NULL);
+{ gpc_polygon *blob = PL_blob_data(atom, NULL, NULL);
   Sfprintf(stream, "<gpc_polygon>(%p)", blob);
   PL_succeed;
 }

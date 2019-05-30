@@ -2,6 +2,11 @@
 
 Uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.0]
+## Added
+- Tristrip support.
+- Consistent convention for foreign argument names; uses camel-case for Prolog terms and atoms, underscore-case for C types.
+
 ## [1.1.0] - 2019-05-04
 ## Added
 - Vertex iteration by contour type.
