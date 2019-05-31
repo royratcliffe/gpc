@@ -14,7 +14,7 @@ int vertex_list_term(gpc_vertex_list *list, term_t Term)
 
 /**
  * List of vertices to a GPC vertex list. Adds X and Y ordinates from
- * vertex(X, Y) terms within the list to the pre-existing GPX vertex
+ * vertex(X, Y) terms within the list to the pre-existing GPC vertex
  * list.
  */
 int term_vertex_list(term_t Term, gpc_vertex_list *list)
