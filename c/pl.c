@@ -108,6 +108,16 @@ foreign_t polygon_clip(atom_t Op, term_t Subject, term_t Clip, term_t Result)
   PL_succeed;
 }
 
+foreign_t polygon_to_tristrip(term_t Polygon, term_t Tristrip)
+{ gpc_polygon *polygon;
+  gpc_tristrip *tristrip;
+  if (!get_polygon(Polygon, &polygon)) PL_fail;
+  unify_tristrip(Tristrip);
+  assert(get_tristrip(Tristrip, &tristrip));
+  gpc_polygon_to_tristrip(polygon, tristrip);
+  PL_succeed;
+}
+
 /**
  * Same as polygon_clip(Op, Subject, Clip, Result) except that Result is
  * a tristrip rather than a polygon.
@@ -122,16 +132,6 @@ foreign_t tristrip_clip(atom_t Op, term_t Subject, term_t Clip, term_t Result)
   unify_tristrip(Result);
   assert(get_tristrip(Result, &result));
   gpc_tristrip_clip(op, subject, clip, result);
-  PL_succeed;
-}
-
-foreign_t polygon_to_tristrip(term_t Polygon, term_t Tristrip)
-{ gpc_polygon *polygon;
-  gpc_tristrip *tristrip;
-  if (!get_polygon(Polygon, &polygon)) PL_fail;
-  unify_tristrip(Tristrip);
-  assert(get_tristrip(Tristrip, &tristrip));
-  gpc_polygon_to_tristrip(polygon, tristrip);
   PL_succeed;
 }
 
@@ -181,8 +181,8 @@ install_t install_gpc()
   PL_register_foreign("gpc_polygon_add_contour", 2, polygon_add_contour, 0);
   PL_register_foreign("gpc_polygon_contour", 2, polygon_contour, PL_FA_NONDETERMINISTIC);
   PL_register_foreign("gpc_polygon_clip", 4, polygon_clip, 0);
-  PL_register_foreign("gpc_tristrip_clip", 4, tristrip_clip, 0);
   PL_register_foreign("gpc_polygon_to_tristrip", 2, polygon_to_tristrip, 0);
+  PL_register_foreign("gpc_tristrip_clip", 4, tristrip_clip, 0);
   PL_register_foreign("gpc_tristrip_num_strips", 2, tristrip_num_strips, 0);
   PL_register_foreign("gpc_tristrip_vertices", 2, tristrip_vertices, PL_FA_NONDETERMINISTIC);
 }
