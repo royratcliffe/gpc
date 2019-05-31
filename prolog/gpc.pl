@@ -9,7 +9,11 @@
               gpc_polygon_box/2,
               gpc_polygon_clip/4,
               gpc_read_polygon/3,
-              gpc_polygon_codes/2
+              gpc_polygon_codes/2,
+              gpc_polygon_to_tristrip/2,
+              gpc_tristrip_clip/4,
+              gpc_tristrip_num_strips/2,
+              gpc_tristrip_vertices/2
           ]).
 
 :- predicate_options(gpc_read_polygon/3, 3,
@@ -30,10 +34,10 @@ ordinates: x and y. Contours can be external, or hole.
 
 ## To long, didn't read
 
-Start with an empty polygon. Add contours. Call this the subject polygon. Do the
-same again with different contours. Call this the clipping polygon. Clip
-the subject polygon against the other. The result can be a difference,
-intersection, exclusive-or or union.
+Start with an empty polygon. Add contours. Call this the subject
+polygon. Do the same again with different contours. Call this the
+clipping polygon. Clip the subject polygon against the other. The result
+can be a difference, intersection, exclusive-or or union.
 
 In Prolog terms (pardon the pun) it works like this. Use clause
 
@@ -59,9 +63,12 @@ Where the operation is one of: =diff=, =int=, =xor=, =union=.
 
 ## Tristrips
 
-You can also clip two polygons resulting in a triangle strip. Each strip comprises zero or more vertex lists, each representing a sub-strip of connected triangles. The interface lets you convert polygons to tristrips. You cannot directly create a tristrip.
+You can also clip two polygons resulting in a triangle strip. Each strip
+comprises zero or more vertex lists, each representing a sub-strip of
+connected triangles. The interface lets you convert polygons to
+tristrips. You cannot directly create a tristrip.
 
-Tristrips model in Prolog as blobs.
+Tristrips model in Prolog as blobs, just as polygons.
 
 @author Roy Ratcliffe <royratcliffe@me.com>
 
@@ -266,13 +273,28 @@ nl -->
 nl -->
     "\n".
 
-%   gpc_tristrip_num_strips
+%!  gpc_polygon_to_tristrip(+Polygon, -Tristrip) is det.
+%
+%   Converts Polygon to Tristrip.
+
+%!  gpc_tristrip_clip(+Op:atom, +Subject, +Clip, -Result) is det.
+%
+%   Clips Subject polygon against Clip polygon, resulting in a tristrip
+%   Result.
+
+%!  gpc_tristrip_num_strips(+Tristrip, -NumStrips:nonneg) is det.
+%
 %   Number of strips within Tristrip. This amounts to the same as
-%       findall(Strip, gpc_tristrip_vertices(Strip), Strips), length(Strips, NumStrips)
-%   Except that it does not enumerate and collate the actual contiguous sub-strips.
+%
+%       findall(Strip, gpc_tristrip_vertices(Strip), Strips),
+%       length(Strips, NumStrips)
+%
+%   Except that it does not enumerate and collate the actual contiguous
+%   sub-strips.
 
-%   gpc_tristrip_vertices
-%   Unifies with Vertices belonging to Tristrip, where vertices is a span of one or more vertex(X, Y) compounds representing a contiguous strip of triangles. The Tristrip blob comprises multiple discontiguous triangle strips.
-
-%   gpc_tristrip_area
-%   Area of Tristrip. Accumulates the total area by summing the half-cross products of each triangle.
+%!  gpc_tristrip_vertices(+Tristrip, -Vertices:list(compound)) is nondet.
+%
+%   Unifies with Vertices belonging to Tristrip, where vertices is a
+%   span of one or more vertex(X, Y) compounds representing a contiguous
+%   strip of triangles. The Tristrip blob comprises multiple
+%   discontiguous triangle strips.
