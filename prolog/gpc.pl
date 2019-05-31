@@ -302,11 +302,16 @@ nl -->
 %   strip of triangles. The Tristrip blob comprises multiple
 %   discontiguous triangle strips.
 
+%!  gpc_tristrip_triangle(+Tristrip, -Triangle:list(compound)) is nondet.
+%
 %   Converts tristrip vertices to triangles each of three two-vectors.
 %
 %   Important to note the tristrip's vertex ordering. The first triple
 %   in each sub-strip winds 0-1-2 (i.e. first, second, third vertex) but
 %   the second winds 1-0-2, i.e. second, first, third vertex.
+%
+%   @arg Triangle is a list of three vertex(X, Y) compounds describing a
+%   triangle within the tristrip.
 
 gpc_tristrip_triangle(Tristrip, Triangle) :-
     gpc_tristrip_vertices(Tristrip, Vertices),
