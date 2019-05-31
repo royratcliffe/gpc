@@ -6,11 +6,11 @@
  * Gets the polygon blob from the given term. Succeeds if the given term
  * associates with a GPC polygon blob.
  */
-int get_polygon(term_t term, gpc_polygon **blob_out)
+int get_polygon(term_t Term, gpc_polygon **blob_out)
 { void *blob;
   PL_blob_t *type;
-  if (!PL_get_blob(term, &blob, NULL, &type) && type == &polygon_blob)
-  { return PL_type_error("gpc_polygon", term);
+  if (!PL_get_blob(Term, &blob, NULL, &type) && type == &polygon_blob)
+  { return PL_type_error("gpc_polygon", Term);
   }
   *blob_out = blob;
   PL_succeed;
@@ -24,21 +24,21 @@ int get_polygon(term_t term, gpc_polygon **blob_out)
  * array. It remains NULL, and therefore assumes that PL_free(NULL)
  * succeeds quietly.
  */
-int unify_polygon(term_t term)
+int unify_polygon(term_t Term)
 { gpc_polygon *blob = PL_malloc(sizeof(*blob));
   memset(blob, 0, sizeof(*blob));
-  return PL_unify_blob(term, blob, sizeof(*blob), &polygon_blob);
+  return PL_unify_blob(Term, blob, sizeof(*blob), &polygon_blob);
 }
 
-int release_polygon(atom_t atom)
-{ gpc_polygon *blob = PL_blob_data(atom, NULL, NULL);
+int release_polygon(atom_t Atom)
+{ gpc_polygon *blob = PL_blob_data(Atom, NULL, NULL);
   gpc_free_polygon(blob);
   PL_free(blob);
   PL_succeed;
 }
 
-int write_polygon(IOSTREAM *stream, atom_t atom, int flags)
-{ gpc_polygon *blob = PL_blob_data(atom, NULL, NULL);
+int write_polygon(IOSTREAM *stream, atom_t Atom, int flags)
+{ gpc_polygon *blob = PL_blob_data(Atom, NULL, NULL);
   Sfprintf(stream, "<gpc_polygon>(%p)", blob);
   PL_succeed;
 }

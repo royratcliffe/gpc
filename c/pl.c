@@ -52,18 +52,18 @@ foreign_t polygon_num_contours(term_t Polygon, term_t NumContours)
   return PL_unify_integer(NumContours, blob->num_contours);
 }
 
-foreign_t polygon_add_contour(term_t polygon, term_t contour)
+foreign_t polygon_add_contour(term_t Polygon, term_t Contour)
 { gpc_polygon *blob;
   functor_t functor;
   term_t vertices;
   int hole;
-  if (!get_polygon(polygon, &blob)) PL_fail;
-  if (!PL_get_functor(contour, &functor)) PL_fail;
+  if (!get_polygon(Polygon, &blob)) PL_fail;
+  if (!PL_get_functor(Contour, &functor)) PL_fail;
   if (functor == external_1_functor) hole = FALSE;
   else if (functor == hole_1_functor) hole = TRUE;
-  else return PL_type_error("external or hole functor", contour);
+  else return PL_type_error("external or hole functor", Contour);
   vertices = PL_new_term_ref();
-  if (!PL_get_arg(1, contour, vertices)) PL_fail;
+  if (!PL_get_arg(1, Contour, vertices)) PL_fail;
   gpc_vertex_list list;
   list.num_vertices = 0;
   list.vertex = PL_malloc(sizeof(list.vertex[0]) << 4);
@@ -76,11 +76,11 @@ foreign_t polygon_add_contour(term_t polygon, term_t contour)
   PL_succeed;
 }
 
-foreign_t polygon_contour(term_t polygon, term_t contour, control_t control)
-{ int context = (int)PL_foreign_context(control);
+foreign_t polygon_contour(term_t Polygon, term_t Contour, control_t Control)
+{ int context = (int)PL_foreign_context(Control);
   gpc_polygon *blob;
-  if (!get_polygon(polygon, &blob)) PL_fail;
-  switch (PL_foreign_control(control))
+  if (!get_polygon(Polygon, &blob)) PL_fail;
+  switch (PL_foreign_control(Control))
   {   term_t list;
     case PL_FIRST_CALL:
       if (blob->num_contours == 0) PL_fail;
@@ -88,7 +88,7 @@ foreign_t polygon_contour(term_t polygon, term_t contour, control_t control)
       list = PL_new_term_ref();
       if (!vertex_list_term(&blob->contour[context], list)) PL_fail;
       functor_t functor = blob->hole[context] ? hole_1_functor : external_1_functor;
-      if (!PL_unify_term(contour, PL_FUNCTOR, functor, PL_TERM, list)) PL_fail;
+      if (!PL_unify_term(Contour, PL_FUNCTOR, functor, PL_TERM, list)) PL_fail;
       if (++context < blob->num_contours) PL_retry(context);
     case PL_PRUNED:
       PL_succeed;
@@ -109,7 +109,8 @@ foreign_t polygon_clip(atom_t Op, term_t Subject, term_t Clip, term_t Result)
 }
 
 /**
- * Same as polygon_clip(Op, Subject, Clip, Result) except that Result is a tristrip rather than a polygon.
+ * Same as polygon_clip(Op, Subject, Clip, Result) except that Result is
+ * a tristrip rather than a polygon.
  */
 foreign_t tristrip_clip(atom_t Op, term_t Subject, term_t Clip, term_t Result)
 { gpc_op op;

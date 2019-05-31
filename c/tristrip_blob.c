@@ -25,8 +25,8 @@ int release_tristrip(atom_t Atom)
   PL_succeed;
 }
 
-int write_tristrip(IOSTREAM *stream, atom_t atom, int flags)
-{ gpc_tristrip *blob = PL_blob_data(atom, NULL, NULL);
+int write_tristrip(IOSTREAM *stream, atom_t Atom, int flags)
+{ gpc_tristrip *blob = PL_blob_data(Atom, NULL, NULL);
   Sfprintf(stream, "<gpc_tristrip>(%p)", blob);
   PL_succeed;
 }
