@@ -101,21 +101,23 @@ test(tristrip, NumStrips == 0) :-
     gpc_polygon_to_tristrip(Polygon, Tristrip),
     gpc_tristrip_num_strips(Tristrip, NumStrips).
 
+polygon(Polygon) :-
+    maplist([X-Y, vertex(X, Y)]>>true, [0-0, 0-1, 1-1, 1-0], Vertices0),
+    gpc_polygon([external(Vertices0)], Polygon).
+
 test(polygon_to_tristrip,
      Vertices == [   vertex(0.0, 0.0),
                      vertex(1.0, 0.0),
                      vertex(0.0, 1.0),
                      vertex(1.0, 1.0)
                  ]) :-
-    maplist([X-Y, vertex(X, Y)]>>true, [0-0, 0-1, 1-1, 1-0], Vertices0),
-    gpc_polygon([external(Vertices0)], Polygon),
+    polygon(Polygon),
     gpc_polygon_num_contours(Polygon, 1),
     gpc_polygon_to_tristrip(Polygon, Tristrip),
     gpc_tristrip_vertices(Tristrip, Vertices).
 
 test(tristrip_area, Area == 1.0) :-
-    maplist([X-Y, vertex(X, Y)]>>true, [0-0, 0-1, 1-1, 1-0], Vertices0),
-    gpc_polygon([external(Vertices0)], Polygon),
+    polygon(Polygon),
     gpc_polygon_to_tristrip(Polygon, Tristrip),
     gpc_tristrip_area(Tristrip, Area).
 
