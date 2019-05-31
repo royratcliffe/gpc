@@ -353,5 +353,5 @@ gpc_tristrip_det(Tristrip, Det) :-
 %   Fails for empty tristrips. Implies zero area.
 
 gpc_tristrip_area(Tristrip, Area) :-
-    aggregate(sum(Det), Tristrip, gpc_tristrip_det(Tristrip, Det), Sum),
+    aggregate(sum(Det), gpc_tristrip_det(Tristrip, Det), Sum),
     Area is Sum / 2.

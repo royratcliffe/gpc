@@ -113,4 +113,10 @@ test(polygon_to_tristrip,
     gpc_polygon_to_tristrip(Polygon, Tristrip),
     gpc_tristrip_vertices(Tristrip, Vertices).
 
+test(tristrip_area, Area == 1.0) :-
+    maplist([X-Y, vertex(X, Y)]>>true, [0-0, 0-1, 1-1, 1-0], Vertices0),
+    gpc_polygon([external(Vertices0)], Polygon),
+    gpc_polygon_to_tristrip(Polygon, Tristrip),
+    gpc_tristrip_area(Tristrip, Area).
+
 :- end_tests(gpc).
