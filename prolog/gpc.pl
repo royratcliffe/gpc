@@ -308,7 +308,10 @@ nl -->
 %
 %   Important to note the tristrip's vertex ordering. The first triple
 %   in each sub-strip winds 0-1-2 (i.e. first, second, third vertex) but
-%   the second winds 1-0-2, i.e. second, first, third vertex.
+%   the second winds 1-0-2, i.e. second, first, third vertex; and so
+%   on, alternating. The implementation normalises the vertices so that
+%   first-second-third ordering correctly unwinds the triangle, as if
+%   an independent standalone triangle.
 %
 %   @arg Triangle is a list of three vertex(X, Y) compounds describing a
 %   triangle within the tristrip.
