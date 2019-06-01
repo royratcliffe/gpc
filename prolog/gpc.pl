@@ -71,7 +71,26 @@ comprises zero or more vertex lists, each representing a sub-strip of
 connected triangles. The interface lets you convert polygons to
 tristrips. You cannot directly create a tristrip.
 
-Tristrips model in Prolog as blobs, just as polygons.
+Tristrips model in Prolog as blobs, just as polygons. You can
+convert from polygon to tristrip using
+gpc_polygon_to_tristrip/2, but polygons can clip with a tristrip
+result directly using
+
+    gpc_tristrip_clip(Op, Subject, Clip, Result)
+
+where Result is a tristrip blob rather than a polygon blob. Get the
+number of tristrip sub-strips using
+
+    gpc_tristrip_num_strips(Tristrip, NumStrips)
+
+and you can unify non-deterministically with the sub-strip vertex lists
+using
+
+    gpc_tristrip_vertices(Tristrip, Vertices)
+
+Vertices is a list of vertex(X, Y) compounds describing a
+strip. Supplementary predicates give access to a tristrip's _normalised_
+triangles, their determinants as well as the tristrip's total area.
 
 @author Roy Ratcliffe <royratcliffe@me.com>
 

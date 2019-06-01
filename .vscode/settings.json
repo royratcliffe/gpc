@@ -1,9 +1,6 @@
 {
   "files.associations": {
     "*.pl": "prolog",
-    "swi-prolog.h": "c",
-    "swi-stream.h": "c",
-    "polygon_blob.h": "c",
-    "tristrip_blob.h": "c"
+    "*.h": "c"
   }
 }
