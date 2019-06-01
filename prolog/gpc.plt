@@ -118,8 +118,9 @@ test(polygon_to_tristrip,
     gpc_polygon_to_tristrip(Polygon, Tristrip),
     gpc_tristrip_vertices(Tristrip, Vertices).
 
-test(tristrip_area, Area == 1.0) :-
-    polygon(1, Polygon),
+test(tristrip_area, all(Area == [1.0, 4.0, 9.0, 16.0, 25.0])) :-
+    between(1, 5, Scalar),
+    polygon(Scalar, Polygon),
     gpc_polygon_to_tristrip(Polygon, Tristrip),
     gpc_tristrip_area(Tristrip, Area).
 
