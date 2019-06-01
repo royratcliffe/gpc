@@ -1,12 +1,6 @@
 :- begin_tests(gpc).
 
-:- use_module(library(plunit)).
-
 :- use_module(gpc).
-
-:- public
-    test/1,
-    test/2.
 
 test(version) :-
     gpc_version(2:32).
