@@ -5,7 +5,7 @@
       "includePath": [
         "C:/Program Files/swipl/include",
         "${workspaceFolder}/**"
-      ],
+      ]
     }
   ],
   "version": 4
