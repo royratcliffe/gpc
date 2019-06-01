@@ -9,7 +9,14 @@
               gpc_polygon_box/2,
               gpc_polygon_clip/4,
               gpc_read_polygon/3,
-              gpc_polygon_codes/2
+              gpc_polygon_codes/2,
+              gpc_polygon_to_tristrip/2,
+              gpc_tristrip_clip/4,
+              gpc_tristrip_num_strips/2,
+              gpc_tristrip_vertices/2,
+              gpc_tristrip_triangle/2,
+              gpc_tristrip_det/2,
+              gpc_tristrip_area/2
           ]).
 
 :- predicate_options(gpc_read_polygon/3, 3,
@@ -30,10 +37,10 @@ ordinates: x and y. Contours can be external, or hole.
 
 ## To long, didn't read
 
-Start with an empty polygon. Add contours. Call this the subject polygon. Do the
-same again with different contours. Call this the clipping polygon. Clip
-the subject polygon against the other. The result can be a difference,
-intersection, exclusive-or or union.
+Start with an empty polygon. Add contours. Call this the subject
+polygon. Do the same again with different contours. Call this the
+clipping polygon. Clip the subject polygon against the other. The result
+can be a difference, intersection, exclusive-or or union.
 
 In Prolog terms (pardon the pun) it works like this. Use clause
 
@@ -56,6 +63,15 @@ Intersect two polygons using
     gpc_polygon_clip(int, Subject, Clip, Result)
 
 Where the operation is one of: =diff=, =int=, =xor=, =union=.
+
+## Tristrips
+
+You can also clip two polygons resulting in a triangle strip. Each strip
+comprises zero or more vertex lists, each representing a sub-strip of
+connected triangles. The interface lets you convert polygons to
+tristrips. You cannot directly create a tristrip.
+
+Tristrips model in Prolog as blobs, just as polygons.
 
 @author Roy Ratcliffe <royratcliffe@me.com>
 
@@ -259,3 +275,83 @@ nl -->
     !.
 nl -->
     "\n".
+
+%!  gpc_polygon_to_tristrip(+Polygon, -Tristrip) is det.
+%
+%   Converts Polygon to Tristrip.
+
+%!  gpc_tristrip_clip(+Op:atom, +Subject, +Clip, -Result) is det.
+%
+%   Clips Subject polygon against Clip polygon, resulting in a tristrip
+%   Result.
+
+%!  gpc_tristrip_num_strips(+Tristrip, -NumStrips:nonneg) is det.
+%
+%   Number of strips within Tristrip. This amounts to the same as
+%
+%       findall(Strip, gpc_tristrip_vertices(Strip), Strips),
+%       length(Strips, NumStrips)
+%
+%   Except that it does not enumerate and collate the actual contiguous
+%   sub-strips.
+
+%!  gpc_tristrip_vertices(+Tristrip, -Vertices:list(compound)) is nondet.
+%
+%   Unifies with Vertices belonging to Tristrip, where vertices is a
+%   span of one or more vertex(X, Y) compounds representing a contiguous
+%   strip of triangles. The Tristrip blob comprises multiple
+%   discontiguous triangle strips.
+
+%!  gpc_tristrip_triangle(+Tristrip, -Triangle:list(compound)) is nondet.
+%
+%   Converts tristrip vertices to triangles each of three two-vectors.
+%
+%   Important to note the tristrip's vertex ordering. The first triple
+%   in each sub-strip winds 0-1-2 (i.e. first, second, third vertex) but
+%   the second winds 1-0-2, i.e. second, first, third vertex; and so
+%   on, alternating. The implementation normalises the vertices so that
+%   first-second-third ordering correctly unwinds the triangle, as if
+%   an independent standalone triangle.
+%
+%   @arg Triangle is a list of three vertex(X, Y) compounds describing a
+%   triangle within the tristrip.
+
+gpc_tristrip_triangle(Tristrip, Triangle) :-
+    gpc_tristrip_vertices(Tristrip, Vertices),
+    vertices_triangles(Vertices, Triangles),
+    member(Triangle, Triangles).
+
+vertices_triangles([V0, V1, V2], [[V0, V1, V2]]).
+vertices_triangles([V0, V1, V2|T0], [[V0, V1, V2]|T]) :-
+    vertices_triangles_([V1, V2|T0], T).
+
+vertices_triangles_([V0, V1, V2], [[V1, V0, V2]]).
+vertices_triangles_([V0, V1, V2|T0], [[V1, V0, V2]|T]) :-
+    vertices_triangles([V1, V2|T0], T).
+
+%!  gpc_tristrip_det(+Tristrip, -Det:number) is nondet.
+%
+%   Unifies with the determinant of each triangle in the tristrip.
+
+gpc_tristrip_det(Tristrip, Det) :-
+    gpc_tristrip_triangle(Tristrip,
+                          [   vertex(X0, Y0),
+                              vertex(X1, Y1),
+                              vertex(X2, Y2)
+                          ]),
+    A is X1 - X0,
+    B is Y1 - Y0,
+    C is X2 - X0,
+    D is Y2 - Y0,
+    Det is A * D - B * C.
+
+%!  gpc_tristrip_area(+Tristrip, -Area:number) is semidet.
+%
+%   Area of Tristrip. Accumulates the total area by summing the
+%   half-determinants of each triangle.
+%
+%   Fails for empty tristrips. Implies zero area.
+
+gpc_tristrip_area(Tristrip, Area) :-
+    aggregate(sum(Det), gpc_tristrip_det(Tristrip, Det), Sum),
+    Area is Sum / 2.

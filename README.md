@@ -64,7 +64,3 @@ folder, not the repo folder itself.
 ?- load_test_files([]).
 ?- run_tests.
 ```
-
-## Work-in-progress
-
-* Currently does not support triangle strips.

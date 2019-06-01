@@ -1,6 +1,12 @@
 :- begin_tests(gpc).
 
+:- use_module(library(plunit)).
+
 :- use_module(gpc).
+
+:- public
+    test/1,
+    test/2.
 
 test(version) :-
     gpc_version(2:32).
@@ -89,5 +95,33 @@ test(clip_union,
     gpc_polygon_clip(union, Subject, Clip, Result),
     gpc_polygon_num_contours(Result, 1),
     gpc_polygon_contour(Result, Contour).
+
+test(tristrip, NumStrips == 0) :-
+    gpc_empty_polygon(Polygon),
+    gpc_polygon_to_tristrip(Polygon, Tristrip),
+    gpc_tristrip_num_strips(Tristrip, NumStrips).
+
+polygon(Scalar, Polygon) :-
+    maplist([X-Y, vertex(X, Y)]>>true,
+            [0-0, 0-Scalar, Scalar-Scalar, Scalar-0],
+            Vertices0),
+    gpc_polygon([external(Vertices0)], Polygon).
+
+test(polygon_to_tristrip,
+     Vertices == [   vertex(0.0, 0.0),
+                     vertex(1.0, 0.0),
+                     vertex(0.0, 1.0),
+                     vertex(1.0, 1.0)
+                 ]) :-
+    polygon(1, Polygon),
+    gpc_polygon_num_contours(Polygon, 1),
+    gpc_polygon_to_tristrip(Polygon, Tristrip),
+    gpc_tristrip_vertices(Tristrip, Vertices).
+
+test(tristrip_area, all(Area == [1.0, 4.0, 9.0, 16.0, 25.0])) :-
+    between(1, 5, Scalar),
+    polygon(Scalar, Polygon),
+    gpc_polygon_to_tristrip(Polygon, Tristrip),
+    gpc_tristrip_area(Tristrip, Area).
 
 :- end_tests(gpc).
