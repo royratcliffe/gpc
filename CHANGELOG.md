@@ -2,7 +2,7 @@
 
 Uses [Semantic Versioning](https://semver.org/).
 
-## [1.2.0]
+## [1.2.0] - 2019-06-01
 ## Added
 - Tristrip support, including triangle unification, determinants and
   total tristrip area.
